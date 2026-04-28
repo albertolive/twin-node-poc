@@ -8,7 +8,7 @@ function bufToB64(buf: ArrayBuffer): string {
   const bytes = new Uint8Array(buf);
   let bin = "";
   for (let i = 0; i < bytes.byteLength; i += 1) {
-    bin += String.fromCharCode(bytes[i]);
+    bin += String.fromCharCode(bytes[i] as number);
   }
   return btoa(bin);
 }
