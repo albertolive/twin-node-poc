@@ -8,5 +8,4 @@ export const config = {
   // - … if they start with `/_next` or `/_vercel`
   // - … the ones containing a dot (e.g. `favicon.ico`)
   matcher: '/((?!_next|_vercel|.*\\..*).*)',
-  runtime: 'nodejs',
 };
