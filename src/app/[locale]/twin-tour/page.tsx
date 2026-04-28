@@ -6,6 +6,7 @@ import { DidLookupCard } from "./_components/DidLookupCard";
 import { FetchCard } from "./_components/FetchCard";
 import { JsonViewer } from "./_components/JsonViewer";
 import { JwtDecoderCard } from "./_components/JwtDecoderCard";
+import { SignatureDemoCard } from "./_components/SignatureDemoCard";
 
 // Always render on demand so the tour reflects the live node state and so
 // the service-account token isn't baked into static HTML at build time.
@@ -157,6 +158,9 @@ export default async function TwinTourPage(props: {
               "did:iota:testnet:0xda31b9524d2b6d71a2222b1386b3d5d0d85182c32645b647e19700be1cbb0d0c"
             }
           />
+
+          {/* 3b. Signature demo */}
+          <SignatureDemoCard />
 
           {/* 4. Public profile (lazy) */}
           {serviceIdentity && (
