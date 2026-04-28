@@ -7,8 +7,21 @@ type Props = {
   serviceIdentity?: string | null;
 };
 
+// Demo JWT (HS256 over a fake key — payload is illustrative only).
+// Decoding is base64-only so the signature doesn't need to verify.
+const SAMPLE_JWT =
+  "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9." +
+  "eyJzdWIiOiJkaWQ6aW90YTp0ZXN0bmV0OjB4ZGEzMWI5NTI0ZDJiNmQ3MWEyMjIyYjEzODZiM2Q1ZDBkODUxODJjMzI2NDViNjQ3ZTE5NzAwYmUxY2JiMGQwYyIsIm9yZyI6ImRpZDppb3RhOnRlc3RuZXQ6MHg0YzZiZjk5ZTZkMDQ2NWFiYzM0NmIzMGNiYTJjZjg5OTEyOTkyZjk3MWE1ZTA1MjY4YWU5ZmY1MGFiZTVlNzg1IiwiZXhwIjoxNzc3MzcxNTI3LCJzY29wZSI6InRlbmFudC1hZG1pbiJ9." +
+  "NbkPZuGmMi3l8yd0ptWm5HxFA5dW8Ou6vrmD-NukfEqFByimp6kf0RpiQ7WmeyaLOGHO9LZ4_o59s74j5CVQAw";
+
 function decodeJwt(token: string): unknown {
-  const [, payload] = token.split(".");
+  const parts = token.split(".");
+  if (parts.length !== 3) {
+    throw new Error(
+      `Not a JWT: expected 3 dot-separated segments, got ${parts.length}. JWTs look like 'eyJ...HEADER.eyJ...PAYLOAD.SIGNATURE'.`,
+    );
+  }
+  const payload = parts[1];
   if (!payload) {
     throw new Error("Invalid JWT (missing payload segment)");
   }
@@ -48,12 +61,19 @@ export function JwtDecoderCard({ serviceIdentity }: Props) {
         and expiry. Paste any TWIN JWT below to inspect it (decoding is
         client-side, no network call).
       </p>
+      <p className="mt-2 text-xs text-slate-500">
+        A JWT has three base64url segments joined by dots:{" "}
+        <code>eyJ...HEADER.eyJ...PAYLOAD.SIGNATURE</code>. A bare DID is{" "}
+        <em>not</em> a JWT — it&apos;s what you&apos;ll find inside the{" "}
+        <code>sub</code> claim.
+      </p>
 
       {serviceIdentity && (
         <p className="mt-3 rounded-md bg-emerald-50 p-3 text-xs text-emerald-800">
           This site is currently authenticated as{" "}
           <code className="font-mono">{serviceIdentity}</code> using a
-          server-side service account. Browser visitors never see the token.
+          server-side service account. Browser visitors never see the token —
+          use the sample below to see what one looks like.
         </p>
       )}
 
@@ -64,16 +84,25 @@ export function JwtDecoderCard({ serviceIdentity }: Props) {
           spellCheck={false}
           rows={3}
           className="rounded-md border border-slate-300 px-3 py-2 font-mono text-xs text-slate-800 focus:border-blue-500 focus:outline-none"
-          placeholder="eyJhbGciOi..."
+          placeholder="eyJhbGciOi...HEADER.eyJzdWIi...PAYLOAD.SIGNATURE"
         />
-        <button
-          type="button"
-          onClick={handleDecode}
-          disabled={!token.trim()}
-          className="self-start rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
-        >
-          Decode JWT payload
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={handleDecode}
+            disabled={!token.trim()}
+            className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+          >
+            Decode JWT payload
+          </button>
+          <button
+            type="button"
+            onClick={() => setToken(SAMPLE_JWT)}
+            className="rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
+          >
+            Load sample token
+          </button>
+        </div>
       </div>
 
       {error && (
