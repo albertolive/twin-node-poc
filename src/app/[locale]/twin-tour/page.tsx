@@ -7,6 +7,7 @@ import { FetchCard } from "./_components/FetchCard";
 import { JsonViewer } from "./_components/JsonViewer";
 import { JwtDecoderCard } from "./_components/JwtDecoderCard";
 import { SignatureDemoCard } from "./_components/SignatureDemoCard";
+import { ArchitectureCard } from "./_components/ArchitectureCard";
 
 // Always render on demand so the tour reflects the live node state and so
 // the service-account token isn't baked into static HTML at build time.
@@ -107,6 +108,9 @@ export default async function TwinTourPage(props: {
         </header>
 
         <div className="space-y-6">
+          {/* 0. Architecture */}
+          <ArchitectureCard />
+
           {/* 1. Node identity */}
           <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
             <h2 className="text-xl font-semibold text-slate-900">
